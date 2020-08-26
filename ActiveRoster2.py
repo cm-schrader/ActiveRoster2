@@ -1,4 +1,5 @@
 from collections import defaultdict
+import tkinter as tk
 import os
 
 events = defaultdict(lambda: 0)
@@ -28,10 +29,10 @@ def run_analysis():
         read_directory(directory)
 
 
-def member_str(name, member):
-    string = f"{white_to_len(name, 40)}|"
-    for key in member.keys():
-        ratio = 100 / events[key] * member[key]
+def member_str(name):
+    string = f"{white_to_len(name, 60)}|"
+    for key in members[name].keys():
+        ratio = 100 / events[key] * members[name][key]
         string = string + f"\t{key}: {white_to_len(str(round(ratio, 1)), 6)}%"
     return string
 
@@ -50,7 +51,24 @@ def white_to_len(string, length):
     return string
 
 
+class Window(tk.Tk):
+    def __init__(self):
+        super().__init__()
+        self.title("ActiveRoster2 : HPRC")
+        tk.Button(self, text="Recalculate", width=15,
+                  command=run_analysis).pack()
+        self.listbox = tk.Listbox(self, width=200, font="TkFixedFont")
+        self.listbox.pack()
+        for member in members.keys():
+            self.listbox.insert(tk.END, member_str(member))
+        self.protocol("WM_DELETE_WINDOW", self.close_window)
+
+    def close_window(self):
+        self.destroy()
+
+
 if __name__ == "__main__":
     run_analysis()
+    Window().mainloop()
     for member in members.keys():
-        print(member_str(member, members[member]))
+        print(member_str(member))
