@@ -14,7 +14,7 @@ def read_csv(directory, file):
         line = csv.readline()
         for line in csv:
             cells = str(line).split("\t")[0:2]
-            if cells[0] != '\x00' and cells[0] not in counted and cells[1] == "Joined":
+            if cells[0] != '\x00' and cells[0] not in counted and "Joined" in cells[1]:
                 members[cells[0]][directory] += 1
 
 
@@ -77,7 +77,7 @@ class Window(tk.Tk):
     def __init__(self):
         # Window initialization
         super().__init__()
-        self.title("ActiveRoster2 : HPRC")
+        self.title("ActiveRoster2")
         self.frame = tk.Frame(self)
         self.frame.pack()
         self.protocol("WM_DELETE_WINDOW", self.close_window)
@@ -124,7 +124,8 @@ class Window(tk.Tk):
 
         self.listbox = tk.Listbox(
             self.frame, width=120, height=30, font="TkFixedFont")
-        self.listbox.grid(row=1, column=0, sticky=tk.W + tk.E, columnspan=3)
+        self.listbox.grid(row=1, column=0, sticky=tk.W +
+                          tk.E + tk.N + tk.S, columnspan=3)
         listscroll = tk.Scrollbar(self.frame)
         listscroll.grid(row=1, column=4, sticky=tk.N + tk.S)
         self.listbox.config(yscrollcommand=listscroll.set)
@@ -137,7 +138,7 @@ class Window(tk.Tk):
         active_members = 0
         group_members = defaultdict(lambda: 0)
         index = 0
-        for member in members.keys():
+        for member in sorted(members.keys()):
             active_groups = 0
             self.listbox.insert(tk.END, member_str(member))
             for event_type in events.keys():
