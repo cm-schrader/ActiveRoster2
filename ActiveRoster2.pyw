@@ -20,8 +20,10 @@ def read_csv(directory, file):
         line = csv.readline()
         for line in csv:
             cells = str(line).split("\t")[0:2]
+            cells[0] = cells[0].replace("\"", "")
             if cells[0] != '\x00' and cells[0] not in counted and "Joined" in cells[1] and "(Guest)" not in cells[0]:
                 members[cells[0]][directory] += 1
+                counted.append(cells[0])
 
 
 def read_directory(path):
